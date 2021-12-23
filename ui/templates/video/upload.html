@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Video App</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+
+
+    <div class='container'>
+        <div class='row'>
+            <div class='text-center col-sm-12'>
+                <h1>Video Upload</h1>
+                
+                <div class='col-sm-4 col-sm-offset-4'>
+                    <form id="form"">
+                        <input type="file" id="myFile" name="file">
+                        <br>
+                        <input id="submit" class="btn btn-primary" type="submit" name="Upload">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+
+    <script type = 'text/javascript'>
+
+        function getCookie(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+
+        var csrftoken = getCookie('csrftoken');
+
+        var form = document.getElementById('form')
+        form.addEventListener('submit',function(e){
+            e.preventDefault()
+
+            let file = document.getElementById('myFile').files[0]
+            console.log(file);
+            
+            const formData = new FormData()
+            formData.append('file',file)
+
+            fetch("http://127.0.0.1:8000/api/upload",{
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken':csrftoken,
+                },
+                body: formData
+                
+
+            }).then(async response =>await response.json())
+            
+            .catch(error => {
+                console.error('There was an error!', error);
+            })
+            .then(data =>console.log(data))
+
+        })
+
+    </script>
+
+
+</body>
+</html>
